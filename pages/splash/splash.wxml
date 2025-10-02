@@ -1,0 +1,9 @@
+<!--pages/splash/splash.wxml-->
+<view class="splash-container">
+  <view class="content">
+    <view class="cat-image">
+      <text class="cat-emoji">🐱</text>
+    </view>
+    <text class="welcome-text">Welcome to MultiPattes</text>
+  </view>
+</view>

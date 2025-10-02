@@ -1,0 +1,391 @@
+/* pages/profile/profile.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 登录页面样式 */
+.login-section {
+  padding: 60rpx 40rpx;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.login-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+}
+
+.login-subtitle {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.login-form {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.avatar-section {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.avatar-wrapper {
+  padding: 0;
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  margin-bottom: 15rpx;
+  margin-left: 38rpx;
+}
+
+.avatar-tip {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.input-section {
+  margin-bottom: 40rpx;
+}
+
+.input-item {
+  margin-bottom: 30rpx;
+}
+
+.input-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.nickname-input {
+  width: 100%;
+  padding: 25rpx;
+  border: 2rpx solid #eee;
+  border-radius: 15rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+}
+
+.login-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 30rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 用户信息样式 */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.user-info {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 25rpx;
+  margin-left: 38rpx;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-role {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.logout-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 1rpx solid #ddd;
+  border-radius: 15rpx;
+  padding: 15rpx 25rpx;
+  font-size: 24rpx;
+}
+
+/* 宠物管理样式 */
+.pets-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.empty-pets {
+  text-align: center;
+  padding: 60rpx 20rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.pets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.pet-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx;
+  background: #f8f9fa;
+  border-radius: 15rpx;
+  gap: 25rpx;
+}
+
+.pet-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  flex-shrink: 0;
+  margin-left: 38rpx;
+}
+
+.pet-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.pet-placeholder {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.pet-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  min-width: 80rpx;
+  flex-shrink: 0;
+}
+
+.pet-feedings {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 80rpx;
+  flex-shrink: 0;
+}
+
+.pet-amount {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 80rpx;
+  flex-shrink: 0;
+}
+
+.pet-actions {
+  margin-left: auto;
+}
+
+.edit-icon-btn {
+  background: none;
+  border: none;
+  font-size: 28rpx;
+  padding: 8rpx;
+  border-radius: 8rpx;
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.add-pet-btn-bottom {
+  width: 100%;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 25rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  width: 90%;
+  max-width: 600rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 40rpx;
+  color: #999;
+  padding: 0;
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-content {
+  padding: 30rpx;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.pet-avatar-wrapper {
+  padding: 0;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+}
+
+.pet-avatar-img {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+}
+
+.pet-avatar-placeholder {
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: 25rpx;
+  border: 2rpx solid #eee;
+  border-radius: 15rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+}
+
+.save-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  border: none;
+  border-radius: 25rpx;
+  padding: 30rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  margin-top: 20rpx;
+}

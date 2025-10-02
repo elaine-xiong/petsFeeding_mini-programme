@@ -1,0 +1,82 @@
+<!--pages/history/history.wxml-->
+<view class="container">
+  <view class="calendar-header">
+    <button class="nav-btn" bindtap="prevMonth">‹</button>
+    <text class="month-title">{{year}}年{{month}}月</text>
+    <button class="nav-btn" bindtap="nextMonth">›</button>
+  </view>
+
+  <view class="calendar">
+    <!-- 星期标题 -->
+    <view class="week-header">
+      <view wx:for="{{weekDays}}" wx:key="index" class="week-day">
+        <text>{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 日历网格 -->
+    <view class="calendar-grid">
+      <view 
+        wx:for="{{calendarData}}" 
+        wx:key="index" 
+        class="calendar-day {{item.isCurrentMonth ? 'current-month' : 'other-month'}} {{item.isToday ? 'today' : ''}} {{item.hasFeedingRecord ? 'has-record' : ''}}"
+        data-datestr="{{item.dateStr}}"
+        bindtap="onDateTap"
+      >
+        <text class="day-number">{{item.day}}</text>
+        <view wx:if="{{item.hasFeedingRecord}}" class="record-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明 -->
+  <view class="legend">
+    <view class="legend-item">
+      <view class="legend-dot has-record-dot"></view>
+      <text class="legend-text">有喂食记录</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-dot today-dot"></view>
+      <text class="legend-text">今天</text>
+    </view>
+  </view>
+
+  <!-- 日期详情弹窗 -->
+  <view wx:if="{{selectedDate}}" class="modal-overlay" bindtap="closeDetailModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">{{formatDate(selectedDate)}}</text>
+        <button class="close-btn" bindtap="closeDetailModal">×</button>
+      </view>
+
+      <view class="modal-body">
+        <view wx:if="{{selectedDateRecords.length === 0}}" class="no-records">
+          <view class="no-records-icon">📝</view>
+          <text class="no-records-text">这一天没有喂食记录</text>
+        </view>
+
+        <view wx:else class="records-list">
+          <view wx:for="{{selectedDateRecords}}" wx:key="index" wx:for-item="petRecord" class="pet-record">
+            <view class="pet-header">
+              <view class="pet-avatar">
+                <image wx:if="{{petRecord.petAvatar}}" src="{{petRecord.petAvatar}}" class="pet-img" mode="aspectFill"></image>
+                <text wx:else class="pet-placeholder">{{petRecord.petName.charAt(0)}}</text>
+              </view>
+              <view class="pet-info">
+                <text class="pet-name">{{petRecord.petName}}</text>
+                <text class="feeding-summary">共喂食{{petRecord.totalFeedings}}次 / 最多{{petRecord.maxFeedings}}次</text>
+              </view>
+            </view>
+
+            <view class="feeding-times">
+              <view wx:for="{{petRecord.records}}" wx:key="index" wx:for-item="record" class="time-item">
+                <text class="time">{{record.time}}</text>
+                <text class="amount">{{record.amount}}g</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

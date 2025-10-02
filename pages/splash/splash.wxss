@@ -1,0 +1,46 @@
+/* pages/splash/splash.wxss */
+.splash-container {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-image {
+  margin-bottom: 60rpx;
+  animation: bounce 2s infinite;
+}
+
+.cat-emoji {
+  font-size: 200rpx;
+  filter: drop-shadow(0 8rpx 16rpx rgba(0, 0, 0, 0.2));
+}
+
+.welcome-text {
+  font-size: 48rpx;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.3);
+  letter-spacing: 2rpx;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20rpx);
+  }
+  60% {
+    transform: translateY(-10rpx);
+  }
+}

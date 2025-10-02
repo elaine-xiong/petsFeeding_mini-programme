@@ -1,0 +1,43 @@
+<!--pages/home/home.wxml-->
+<view class="container">
+
+  <view wx:if="{{pets.length === 0}}" class="empty-state">
+    <view class="empty-icon">🐾</view>
+    <text class="empty-text">还没有添加宠物</text>
+    <text class="empty-desc">请到"铲屎官"页面添加宠物信息</text>
+  </view>
+
+  <view wx:else class="pets-list">
+    <view wx:for="{{pets}}" wx:key="id" class="pet-card">
+      <view class="pet-layout">
+        <!-- 左侧头像区域 -->
+        <view class="avatar-section">
+          <text class="pet-name-on-avatar">{{item.name}}</text>
+          <view class="pet-avatar">
+            <image wx:if="{{item.avatar}}" src="{{item.avatar}}" class="avatar-img" mode="aspectFill"></image>
+            <text wx:else class="avatar-placeholder">{{item.name.charAt(0)}}</text>
+          </view>
+        </view>
+
+        <!-- 右侧进食记录区域 -->
+        <view class="feeding-info">
+          <view wx:if="{{(feedingRecords[item.id] || []).length === 0}}" class="no-feeding-today">
+            <text class="no-feeding-text">今日还未进食</text>
+          </view>
+          <view wx:else class="feeding-list">
+            <view wx:for="{{feedingRecords[item.id]}}" wx:key="index" wx:for-item="record" class="feeding-record">
+              <text class="feeding-time">{{record.time}}</text>
+              <text class="feeding-order">第{{index + 1}}次</text>
+              <text class="feeding-amount">{{record.amount}}g</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部投喂按钮 -->
+  <view class="bottom-feed-button">
+    <button class="feed-circle-btn" bindtap="showFeedModal">投喂</button>
+  </view>
+</view>

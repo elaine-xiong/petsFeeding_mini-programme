@@ -1,0 +1,135 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view wx:if="{{!isLoggedIn}}" class="login-section">
+    <view class="login-header">
+      <text class="login-title">欢迎使用宠物喂食助手</text>
+      <text class="login-subtitle">请先完成登录</text>
+    </view>
+
+    <view class="login-form">
+      <view class="avatar-section">
+        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+          <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+          <view class="avatar-tip">点击选择头像</view>
+        </button>
+      </view>
+
+      <view class="input-section">
+        <view class="input-item">
+          <text class="input-label">昵称</text>
+          <input 
+            type="nickname" 
+            class="nickname-input" 
+            placeholder="请输入您的昵称" 
+            value="{{userInfo.nickName}}"
+            bindinput="onNicknameChange" 
+          />
+        </view>
+      </view>
+
+      <button class="login-btn" bindtap="login">完成登录</button>
+    </view>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view wx:else class="profile-section">
+    <!-- 用户信息 -->
+    <view class="user-info">
+      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <text class="user-name">{{userInfo.nickName}}</text>
+        <text class="user-role">铲屎官</text>
+      </view>
+      <button class="logout-btn" bindtap="logout">退出</button>
+    </view>
+
+    <!-- 宠物管理 -->
+    <view class="pets-section">
+      <view class="section-header">
+        <text class="section-title">我的宠物</text>
+      </view>
+
+      <view wx:if="{{pets.length === 0}}" class="empty-pets">
+        <view class="empty-icon">🐱</view>
+        <text class="empty-text">还没有添加宠物</text>
+        <text class="empty-desc">点击下方按钮添加您的第一只宠物</text>
+      </view>
+
+      <view wx:else class="pets-list">
+        <view wx:for="{{pets}}" wx:key="id" class="pet-item">
+          <view class="pet-avatar">
+            <image wx:if="{{item.avatar}}" src="{{item.avatar}}" class="pet-img" mode="aspectFill"></image>
+            <text wx:else class="pet-placeholder">{{item.name.charAt(0)}}</text>
+          </view>
+          <view class="pet-name">{{item.name}}</view>
+          <view class="pet-feedings">{{item.maxFeedingsPerDay}}次/日</view>
+          <view class="pet-amount">{{item.feedingAmount}}g/次</view>
+          <view class="pet-actions">
+            <button class="edit-icon-btn" data-petid="{{item.id}}" bindtap="editPet">✏️</button>
+          </view>
+        </view>
+      </view>
+
+      <button class="add-pet-btn-bottom" bindtap="showAddPetForm">+ 添加宠物</button>
+    </view>
+  </view>
+
+  <!-- 宠物信息表单弹窗 -->
+  <view wx:if="{{showPetForm}}" class="modal-overlay" bindtap="hidePetForm">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">{{editingPetId ? '编辑宠物信息' : '添加宠物'}}</text>
+        <button class="close-btn" bindtap="hidePetForm">×</button>
+      </view>
+
+      <view class="form-content">
+        <view class="form-item">
+          <text class="form-label">宠物头像</text>
+          <button class="pet-avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onPetAvatarChoose">
+            <image wx:if="{{petForm.avatar}}" src="{{petForm.avatar}}" class="pet-avatar-img" mode="aspectFill"></image>
+            <view wx:else class="pet-avatar-placeholder">
+              <text>{{petForm.name ? petForm.name.charAt(0) : '+'}}</text>
+            </view>
+          </button>
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">宠物名称 *</text>
+          <input 
+            class="form-input" 
+            placeholder="请输入宠物名称" 
+            value="{{petForm.name}}"
+            bindinput="onPetNameChange"
+          />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">每日最大喂食次数 *</text>
+          <input 
+            class="form-input" 
+            type="number" 
+            placeholder="建议2-4次" 
+            value="{{petForm.maxFeedingsPerDay}}"
+            bindinput="onMaxFeedingsChange"
+          />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">每次喂食量(g) *</text>
+          <input 
+            class="form-input" 
+            type="number" 
+            placeholder="请输入每次喂食量" 
+            value="{{petForm.feedingAmount}}"
+            bindinput="onFeedingAmountChange"
+          />
+        </view>
+
+        <button class="save-btn" bindtap="savePet">
+          {{editingPetId ? '保存修改' : '添加宠物'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
