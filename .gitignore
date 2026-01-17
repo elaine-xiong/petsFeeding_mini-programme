@@ -1,14 +1,29 @@
-# Windows
+# =====================
+# System
+# =====================
 [Dd]esktop.ini
 Thumbs.db
 $RECYCLE.BIN/
-
-# macOS
 .DS_Store
 .fseventsd
 .Spotlight-V100
 .TemporaryItems
 .Trashes
 
+# =====================
 # Node.js
+# =====================
 node_modules/
+
+# =====================
+# WeChat Mini Program
+# =====================
+project.private.config.json
+miniprogram_npm/
+dist/
+
+# =====================
+# IDE
+# =====================
+.vscode/
+.idea/

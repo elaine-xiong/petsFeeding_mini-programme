@@ -46,6 +46,7 @@
   color: #999;
 }
 
+
 .pets-list {
   display: flex;
   flex-direction: column;
@@ -110,10 +111,48 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 15rpx;
+}
+
+/* 进食状态概览 */
+.feeding-status {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  border-radius: 15rpx;
+  padding: 20rpx;
+  color: white;
+  margin-bottom: 10rpx;
+}
+
+.status-label {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.status-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feeding-count {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.feeding-total {
+  font-size: 28rpx;
+  font-weight: bold;
+  opacity: 0.9;
 }
 
 .no-feeding-today {
-  padding: 20rpx 0;
+  padding: 20rpx;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 15rpx;
+  border: 2rpx dashed #ddd;
 }
 
 .no-feeding-text {
@@ -125,64 +164,142 @@
 .feeding-list {
   display: flex;
   flex-direction: column;
-  gap: 15rpx;
-  margin-bottom: 25rpx;
+  gap: 10rpx;
 }
 
 .feeding-record {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  padding: 15rpx 20rpx;
+  gap: 15rpx;
+  padding: 12rpx 16rpx;
   background: #f8f9fa;
-  border-radius: 15rpx;
-  border-left: 4rpx solid #ff6b35;
+  border-radius: 12rpx;
+  border-left: 3rpx solid #ff6b35;
 }
 
 .feeding-time {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #333;
   font-weight: bold;
-  min-width: 100rpx;
-}
-
-.feeding-order {
-  font-size: 24rpx;
-  color: #666;
   min-width: 80rpx;
 }
 
+.feeding-order {
+  font-size: 22rpx;
+  color: #666;
+  min-width: 70rpx;
+}
+
 .feeding-amount {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #ff6b35;
   font-weight: bold;
 }
 
-/* 底部投喂按钮 */
-.bottom-feed-button {
+/* 饥饿弹窗样式 */
+.hungry-modal-overlay {
   position: fixed;
-  bottom: 120rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
 }
 
-.feed-circle-btn {
-  width: 120rpx;
-  height: 120rpx;
-  background: linear-gradient(135deg, #ff6b35, #f7931e);
-  color: white;
-  border: none;
-  border-radius: 50%;
+.hungry-modal {
+  background: white;
+  border-radius: 20rpx;
+  width: 100%;
+  max-width: 600rpx;
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50rpx) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-content {
+  padding: 40rpx;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.modal-icon {
+  font-size: 80rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.modal-body {
+  margin-bottom: 40rpx;
+}
+
+.modal-message {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+  display: block;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
   font-size: 28rpx;
   font-weight: bold;
-  box-shadow: 0 4rpx 20rpx rgba(255, 107, 53, 0.4);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.feed-circle-btn:active {
+.feed-btn {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  box-shadow: 0 4rpx 15rpx rgba(255, 107, 53, 0.3);
+}
+
+.feed-btn:active {
   transform: scale(0.95);
-  box-shadow: 0 2rpx 10rpx rgba(255, 107, 53, 0.6);
+  box-shadow: 0 2rpx 8rpx rgba(255, 107, 53, 0.4);
+}
+
+.diet-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 2rpx solid #e9ecef;
+}
+
+.diet-btn:active {
+  transform: scale(0.95);
+  background: #e9ecef;
 }

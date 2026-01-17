@@ -3,7 +3,11 @@ Page({
   data: {
     pets: [],
     currentDate: '',
-    feedingRecords: {}
+    feedingRecords: {},
+    feedingSummaries: {}, // 存储每个宠物的进食汇总信息
+    nfcScanCounts: {}, // 存储每个宠物当日的NFC刷卡次数
+    showHungryModal: false, // 控制饥饿弹窗显示
+    hungryPet: null, // 当前饥饿的宠物信息
   },
 
   onLoad() {
@@ -11,11 +15,13 @@ Page({
     this.loadPets();
     this.setCurrentDate();
     this.loadTodayFeedingRecords();
+    this.loadTodayNfcCounts();
   },
 
   onShow() {
     this.loadPets();
     this.loadTodayFeedingRecords();
+    this.loadTodayNfcCounts();
   },
 
   initializeSampleData() {
@@ -63,6 +69,16 @@ Page({
         };
         
         wx.setStorageSync('feedingRecords', sampleFeedingRecords);
+        
+        // 创建今日的NFC刷卡记录（示例：猫胖已刷5次）
+        const sampleNfcRecords = {
+          [todayStr]: {
+            'cat1': 5, // 猫胖已刷5次
+            'cat2': 2  // 猫瘦刷了2次
+          }
+        };
+        
+        wx.setStorageSync('nfcRecords', sampleNfcRecords);
       }
     } catch (e) {
       console.error('初始化示例数据失败', e);
@@ -79,6 +95,17 @@ Page({
     });
   },
 
+  manualFeed(e) {
+  const petId = e.currentTarget.dataset.petid;
+  this.sendFeedCommand(petId, true);
+
+  wx.showToast({
+    title: '已手动投喂',
+    icon: 'success'
+  });
+},
+
+
   loadPets() {
     try {
       const pets = wx.getStorageSync('pets') || [];
@@ -93,101 +120,171 @@ Page({
       const today = this.data.currentDate;
       const allRecords = wx.getStorageSync('feedingRecords') || {};
       const todayRecords = allRecords[today] || {};
-      this.setData({ feedingRecords: todayRecords });
+      
+      // 计算每个宠物的进食汇总
+      const feedingSummaries = {};
+      const { pets } = this.data;
+      
+      pets.forEach(pet => {
+        const records = todayRecords[pet.id] || [];
+        const totalAmount = records.reduce((total, record) => total + record.amount, 0);
+        feedingSummaries[pet.id] = {
+          count: records.length,
+          totalAmount: totalAmount,
+          maxFeedings: pet.maxFeedingsPerDay || 3
+        };
+      });
+      
+      this.setData({ 
+        feedingRecords: todayRecords,
+        feedingSummaries: feedingSummaries
+      });
     } catch (e) {
       console.error('加载今日喂食记录失败', e);
     }
   },
 
-  showFeedModal() {
-    const { pets } = this.data;
-    
-    if (pets.length === 0) {
-      wx.showToast({
-        title: '请先添加宠物',
-        icon: 'none'
-      });
-      return;
-    }
-
-    // 直接显示投喂量选择器
-    this.showFeedAmountPicker();
-  },
-
-  showFeedAmountPicker() {
-    // 创建0-200g的选择范围，每5g一个选项
-    const amounts = [];
-    for (let i = 0; i <= 200; i += 5) {
-      amounts.push(i + 'g');
-    }
-    
-    wx.showPicker({
-      range: amounts,
-      success: (res) => {
-        const selectedAmount = parseInt(amounts[res.range[0]]);
-        // 选择完投喂量后，再选择宠物
-        this.selectPetForFeeding(selectedAmount);
-      }
-    });
-  },
-
-  selectPetForFeeding(amount) {
-    const { pets } = this.data;
-    const petNames = pets.map(pet => pet.name);
-    
-    wx.showActionSheet({
-      itemList: petNames,
-      success: (res) => {
-        const selectedPet = pets[res.tapIndex];
-        this.feedPetWithAmount(selectedPet, amount);
-      }
-    });
-  },
-
-  feedPetWithAmount(pet, amount) {
-    const today = this.data.currentDate;
-    const currentFeedings = this.data.feedingRecords[pet.id] || [];
-    
-    if (currentFeedings.length >= pet.maxFeedingsPerDay) {
-      wx.showToast({
-        title: `${pet.name}今日已达到最大喂食次数`,
-        icon: 'none'
-      });
-      return;
-    }
-
-    const now = new Date();
-    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
-    const newFeeding = {
-      time: timeString,
-      amount: amount
-    };
-
-    const updatedFeedings = [...currentFeedings, newFeeding];
-    const updatedRecords = {
-      ...this.data.feedingRecords,
-      [pet.id]: updatedFeedings
-    };
-
-    // 保存到本地存储
+  // 加载今日NFC刷卡次数
+  loadTodayNfcCounts() {
     try {
-      const allRecords = wx.getStorageSync('feedingRecords') || {};
-      allRecords[today] = updatedRecords;
-      wx.setStorageSync('feedingRecords', allRecords);
+      const today = this.data.currentDate;
+      const allNfcRecords = wx.getStorageSync('nfcRecords') || {};
+      const todayNfcRecords = allNfcRecords[today] || {};
       
-      this.setData({ feedingRecords: updatedRecords });
+      this.setData({ nfcScanCounts: todayNfcRecords });
       
-      wx.showToast({
-        title: `已为${pet.name}投喂${amount}g`,
-        icon: 'success'
-      });
+      // 检查是否有宠物达到5次刷卡，显示饥饿弹窗
+      this.checkHungryPets(todayNfcRecords);
     } catch (e) {
-      console.error('保存喂食记录失败', e);
+      console.error('加载今日NFC记录失败', e);
+    }
+  },
+
+  // 检查饥饿的宠物
+  checkHungryPets(nfcCounts) {
+    const { pets } = this.data;
+    
+    pets.forEach(pet => {
+      const scanCount = nfcCounts[pet.id] || 0;
+      if (scanCount >= 5) {
+        // 显示饥饿弹窗
+        this.setData({
+          showHungryModal: true,
+          hungryPet: pet
+        });
+      }
+    });
+  },
+
+  // 关闭饥饿弹窗
+  closeHungryModal() {
+    this.setData({
+      showHungryModal: false,
+      hungryPet: null
+    });
+  },
+
+  // 立即投喂
+  feedNow() {
+    const { hungryPet } = this.data;
+    if (hungryPet) {
+      // 发送投粮指令给投食机
+      this.sendFeedCommand(hungryPet.id, true);
+      
       wx.showToast({
-        title: '保存失败',
+        title: `已发送投粮指令给${hungryPet.name}的投食机`,
+        icon: 'success',
+        duration: 2000
+      });
+    }
+    this.closeHungryModal();
+  },
+
+  // 帮助减肥
+  helpDiet() {
+    const { hungryPet } = this.data;
+    if (hungryPet) {
+      // 发送不投粮指令给投食机
+      this.sendFeedCommand(hungryPet.id, false);
+      
+      wx.showToast({
+        title: `已发送不投粮指令，${hungryPet.name}需要减肥`,
+        icon: 'success',
+        duration: 2000
+      });
+    }
+    this.closeHungryModal();
+  },
+
+  // 发送指令给投食机
+  // 发送指令给投食机
+sendFeedCommand(petId, shouldFeed) {
+  const { pets } = this.data;
+  const pet = pets.find(p => p.id === petId);
+
+  if (!pet) {
+    console.error('未找到对应的宠物');
+    return;
+  }
+
+  const commandType = shouldFeed ? 'FEED' : 'NO_FEED';
+
+  // 构建指令数据（与后端接口匹配）
+  const command = {
+    pet_id: petId,
+    command_type: commandType,
+    should_feed: shouldFeed ? 1 : 0
+  };
+
+  console.log('发送投食机指令:', command);
+
+  // 发给后端
+  wx.request({
+    url: 'http://192.168.1.121:3300/feed_commands',
+    method: 'POST',
+    data: command,
+    success: res => {
+      console.log('feed_commands 后端返回:', res.data);
+      if (res.data.success) {
+        wx.showToast({
+          title: '指令发送成功',
+          icon: 'success'
+        });
+      } else {
+        wx.showToast({
+          title: '指令发送失败',
+          icon: 'error'
+        });
+      }
+    },
+    fail: err => {
+      console.error('feed_commands 请求失败:', err);
+      wx.showToast({
+        title: '网络请求失败',
         icon: 'error'
       });
     }
+  });
+
+  // 本地存一份
+  try {
+    const commandHistory = wx.getStorageSync('feedCommands') || [];
+    commandHistory.push({
+      ...command,
+      petName: pet.name,
+      timestamp: new Date().toISOString()
+    });
+
+    if (commandHistory.length > 50) {
+      commandHistory.splice(0, commandHistory.length - 50);
+    }
+
+    wx.setStorageSync('feedCommands', commandHistory);
+  } catch (e) {
+    console.error('保存指令记录失败:', e);
   }
+},
+
+
+
 })

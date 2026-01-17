@@ -20,8 +20,14 @@
         <text class="userinfo-nickname">{{userInfo.nickName}}</text>
       </block>
     </view>
+    
+    <view class="backend-result">
+      <text>用户数量：{{userList.length}}</text>
+    </view>
+    
     <view class="usermotto">
       <text class="user-motto">{{motto}}</text>
     </view>
   </view>
 </scroll-view>
+

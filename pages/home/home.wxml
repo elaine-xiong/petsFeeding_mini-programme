@@ -17,27 +17,70 @@
             <image wx:if="{{item.avatar}}" src="{{item.avatar}}" class="avatar-img" mode="aspectFill"></image>
             <text wx:else class="avatar-placeholder">{{item.name.charAt(0)}}</text>
           </view>
-        </view>
+        </view> <!-- avatar-section -->
 
-        <!-- 右侧进食记录区域 -->
+        <!-- 右侧进食信息区域 -->
         <view class="feeding-info">
-          <view wx:if="{{(feedingRecords[item.id] || []).length === 0}}" class="no-feeding-today">
-            <text class="no-feeding-text">今日还未进食</text>
-          </view>
-          <view wx:else class="feeding-list">
-            <view wx:for="{{feedingRecords[item.id]}}" wx:key="index" wx:for-item="record" class="feeding-record">
-              <text class="feeding-time">{{record.time}}</text>
-              <text class="feeding-order">第{{index + 1}}次</text>
-              <text class="feeding-amount">{{record.amount}}g</text>
+          <!-- 进食状态概览 -->
+          <view class="feeding-status">
+            <text class="status-label">今日进食</text>
+            <view class="status-summary">
+              <text class="feeding-count">{{feedingSummaries[item.id] ? feedingSummaries[item.id].count : 0}}次</text>
+              <text class="feeding-total">{{feedingSummaries[item.id] ? feedingSummaries[item.id].totalAmount : 0}}g</text>
             </view>
           </view>
+
+          <!-- 详细进食记录 -->
+          <block wx:if="{{!feedingRecords[item.id] || feedingRecords[item.id].length == 0}}">
+            <view class="no-feeding-today">
+              <text class="no-feeding-text">😿 今日还未进食</text>
+            </view>
+          </block>
+
+          <block wx:else>
+            <view class="feeding-list">
+              <view
+                wx:for="{{feedingRecords[item.id]}}"
+                wx:for-item="record"
+                wx:for-index="index"
+                wx:key="index"
+                class="feeding-record"
+              >
+                <text class="feeding-time">{{record.time}}</text>
+                <text class="feeding-order">第{{index + 1}}次</text>
+                <text class="feeding-amount">{{record.amount}}g</text>
+              </view>
+            </view>
+          </block>
+        </view> <!-- feeding-info -->
+        <button 
+        class="manual-feed-btn"
+        data-petid="{{item.id}}"
+        bindtap="manualFeed"
+      >
+        手动投喂
+      </button>
+      </view> <!-- pet-layout -->
+    </view> <!-- pet-card -->
+  </view> <!-- pets-list -->
+
+  <!-- 饥饿弹窗 -->
+  <view wx:if="{{showHungryModal}}" class="hungry-modal-overlay" bindtap="closeHungryModal">
+    <view class="hungry-modal" catchtap="">
+      <view class="modal-content">
+        <view class="modal-header">
+          <text class="modal-icon">😿</text>
+          <text class="modal-title">{{hungryPet.name}}饿了</text>
+        </view>
+        <view class="modal-body">
+          <text class="modal-message">{{hungryPet.name}}今日已刷卡{{nfcScanCounts[hungryPet.id]}}次，可能是饿了需要投喂，或者需要减肥计划。</text>
+        </view>
+        <view class="modal-buttons">
+          <button class="modal-btn feed-btn" bindtap="feedNow">立即投喂</button>
+          <button class="modal-btn diet-btn" bindtap="helpDiet">帮TA减肥</button>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 底部投喂按钮 -->
-  <view class="bottom-feed-button">
-    <button class="feed-circle-btn" bindtap="showFeedModal">投喂</button>
-  </view>
 </view>
